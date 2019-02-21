@@ -14,6 +14,10 @@ import {APP_BASE_HREF} from '@angular/common';
 import {CustomModule} from './custom.module';
 import {UserComponent} from './users/user.component';
 
+import {todoComponent} from './todo/todo.component';
+import {todoListComponent} from "./todo/todo-list.component";
+import {TodoListService} from "./todo/todo-list.service";
+
 
 @NgModule({
   imports: [
@@ -27,6 +31,8 @@ import {UserComponent} from './users/user.component';
     HomeComponent,
     UserListComponent,
     UserComponent,
+    todoComponent,
+    todoListComponent,
 
   ],
   providers: [

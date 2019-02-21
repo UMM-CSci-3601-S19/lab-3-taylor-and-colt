@@ -1,17 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 
-import {UserListService} from './user-list.service';
-import {User} from './user';
+import {TodoListService} from './todo-list.service';
+import {User} from './todo';
 import {Observable} from 'rxjs/Observable';
 
 @Component({
-  selector: 'app-user-list-component',
-  templateUrl: 'user-list.component.html',
-  styleUrls: ['./user-list.component.css'],
+  selector: 'app-todo-list-component',
+  templateUrl: 'todo-list.component.html',
+  styleUrls: ['./todo-list.component.css'],
   providers: []
 })
 
-export class UserListComponent implements OnInit {
+export class todoListComponent implements OnInit {
   // These are public so that tests can reference them (.spec.ts)
   public users: User[];
   public filteredUsers: User[];
@@ -26,7 +26,7 @@ export class UserListComponent implements OnInit {
   // We can call upon the service for interacting
   // with the server.
 
-  constructor(private userListService: UserListService) {
+  constructor(private todoListService: TodoListService) {
 
   }
 
@@ -64,7 +64,7 @@ export class UserListComponent implements OnInit {
     // Subscribe waits until the data is fully downloaded, then
     // performs an action on it (the first lambda)
 
-    const users: Observable<User[]> = this.userListService.getUsers();
+    const users: Observable<User[]> = this.todoListService.getUsers();
     users.subscribe(
       returnedUsers => {
         this.users = returnedUsers;
