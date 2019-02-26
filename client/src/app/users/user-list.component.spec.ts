@@ -87,6 +87,7 @@ describe('User list', () => {
   it('has two users that are 37 years old', () => {
     expect(userList.users.filter((user: User) => user.age === 37).length).toBe(2);
   });
+
   it('user list filters by name', () => {
     expect(userList.filteredUsers.length).toBe(3);
     userList.userName = 'a';

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 import {TodoListService} from './todo-list.service';
-import {User} from './todo';
+import {Todo} from './todo';
 import {Observable} from 'rxjs/Observable';
 
 @Component({
@@ -11,13 +11,17 @@ import {Observable} from 'rxjs/Observable';
   providers: []
 })
 
-export class todoListComponent implements OnInit {
+export class TodoListComponent implements OnInit {
   // These are public so that tests can reference them (.spec.ts)
-  public users: User[];
-  public filteredUsers: User[];
+  public todos: Todo[];
+  public filteredUsers: Todo[];
 
-  public userName: string;
-  public userAge: number;
+  public todoOwner: string;
+  public todoBody: string;
+  public todoStatus: string;
+  public todoID: string;
+  public todoCategory: string;
+
 
 
   // Inject the UserListService into this component.
@@ -30,23 +34,58 @@ export class todoListComponent implements OnInit {
 
   }
 
-  public filterUsers(searchName: string, searchAge: number): User[] {
+  public filterUsers(searchOwner: string,
+                     searchBody: string,
+                     searchStatus: string,
+                     searchID: string,
+                     searchCategory: string
+  )
+  : Todo[] {
 
-    this.filteredUsers = this.users;
+    this.filteredUsers = this.todos;
 
-    // Filter by name
-    if (searchName != null) {
-      searchName = searchName.toLocaleLowerCase();
+    // Filter by owner
+    if (searchOwner != null) {
+      searchOwner = searchOwner.toLocaleLowerCase();
 
-      this.filteredUsers = this.filteredUsers.filter(user => {
-        return !searchName || user.name.toLowerCase().indexOf(searchName) !== -1;
+      this.filteredUsers = this.filteredUsers.filter(todo => {
+        return !searchOwner || todo.owner.toLowerCase().indexOf(searchOwner) !== -1;
       });
     }
 
-    // Filter by age
-    if (searchAge != null) {
-      this.filteredUsers = this.filteredUsers.filter((user: User) => {
-        return !searchAge || (user.age === Number(searchAge));
+    // Filter by body
+    if (searchBody != null) {
+      searchBody = searchBody.toLocaleLowerCase();
+
+      this.filteredUsers = this.filteredUsers.filter(todo => {
+        return !searchBody || todo.body.toLowerCase().indexOf(searchBody) !== -1;
+      });
+
+
+    }
+    if (searchCategory != null) {
+      searchCategory = searchCategory.toLocaleLowerCase();
+
+      this.filteredUsers = this.filteredUsers.filter(todo => {
+        return !searchCategory || todo.category.toLowerCase().indexOf(searchCategory) !== -1;
+      });
+
+
+    }
+    // Filter by status
+    if (searchStatus != null) {
+      if(searchStatus.toLocaleLowerCase() == "true" || "false") {
+        var searchStatusStatus = searchStatus == "true";
+        this.filteredUsers = this.filteredUsers.filter((todo: Todo) => {
+          return !searchStatus || todo.status == searchStatusStatus;
+        });
+      }
+
+    }
+    // Filter by ID
+    if (searchID != null) {
+      this.filteredUsers = this.filteredUsers.filter((todo: Todo) => {
+        return !searchID || todo.id.toLowerCase().indexOf(searchID) !== -1;
       });
     }
 
@@ -57,23 +96,23 @@ export class todoListComponent implements OnInit {
    * Starts an asynchronous operation to update the users list
    *
    */
-  refreshUsers(): Observable<User[]> {
+  refreshUsers(): Observable<Todo[]> {
     // Get Users returns an Observable, basically a "promise" that
     // we will get the data from the server.
     //
     // Subscribe waits until the data is fully downloaded, then
     // performs an action on it (the first lambda)
 
-    const users: Observable<User[]> = this.todoListService.getUsers();
-    users.subscribe(
-      returnedUsers => {
-        this.users = returnedUsers;
-        this.filterUsers(this.userName, this.userAge);
+    const todos: Observable<Todo[]> = this.todoListService.getUsers();
+    todos.subscribe(
+      returnedTodos => {
+        this.todos = returnedTodos;
+        this.filterUsers(this.todoOwner, this.todoBody, this.todoStatus, this.todoID, this.todoCategory);
       },
       err => {
         console.log(err);
       });
-    return users;
+    return todos;
   }
 
 

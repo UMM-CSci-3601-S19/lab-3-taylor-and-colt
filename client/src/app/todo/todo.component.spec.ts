@@ -1,17 +1,17 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {User} from './todo';
-import {todoComponent} from './todo.component';
+import {Todo} from './todo';
+import {TodoComponent} from './todo.component';
 import {TodoListService} from './todo-list.service';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
 describe('User component', () => {
 
-  let TodoComponent: todoComponent;
-  let fixture: ComponentFixture<todoComponent>;
+  let todoComponent: TodoComponent;
+  let fixture: ComponentFixture<TodoComponent>;
 
   let todoListServiceStub: {
-    getUserById: (userId: string) => Observable<User>
+    getUserById: (userId: string) => Observable<Todo>
   };
 
   beforeEach(() => {
@@ -20,24 +20,24 @@ describe('User component', () => {
       getUserById: (userId: string) => Observable.of([
         {
           id: 'chris_id',
-          name: 'Chris',
-          age: 25,
-          company: 'UMM',
-          email: 'chris@this.that'
+          owner: 'Chris',
+          status: true,
+          body: 'UMM',
+          category: 'software design'
         },
         {
           id: 'pat_id',
-          name: 'Pat',
-          age: 37,
-          company: 'IBM',
-          email: 'pat@something.com'
+          owner: 'Pat',
+          status: true,
+          body: 'IBM',
+          category: 'pat@something.com'
         },
         {
           id: 'jamie_id',
-          name: 'Jamie',
-          age: 37,
-          company: 'Frogs, Inc.',
-          email: 'jamie@frogs.com'
+          owner: 'Jamie',
+          status: true,
+          body: 'Frogs, Inc.',
+          category: 'jamie@frogs.com'
         }
       ].find(user => user.id === userId))
     };
@@ -50,21 +50,21 @@ describe('User component', () => {
 
   beforeEach(async(() => {
     TestBed.compileComponents().then(() => {
-      fixture = TestBed.createComponent(todoComponent);
-      TodoComponent = fixture.componentInstance;
+      fixture = TestBed.createComponent(TodoComponent);
+      todoComponent = fixture.componentInstance;
     });
   }));
 
   it('can retrieve Pat by ID', () => {
-    TodoComponent.setId('pat_id');
-    expect(TodoComponent.user).toBeDefined();
-    expect(TodoComponent.user.name).toBe('Pat');
-    expect(TodoComponent.user.email).toBe('pat@something.com');
+    todoComponent.setId('pat_id');
+    expect(todoComponent.todo).toBeDefined();
+    expect(todoComponent.todo.owner).toBe('Pat');
+    expect(todoComponent.todo.category).toBe('pat@something.com');
   });
 
   it('returns undefined for Santa', () => {
-    TodoComponent.setId('Santa');
-    expect(TodoComponent.user).not.toBeDefined();
+    todoComponent.setId('Santa');
+    expect(todoComponent.todo).not.toBeDefined();
   });
 
 });

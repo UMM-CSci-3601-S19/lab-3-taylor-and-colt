@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {TodoListService} from './todo-list.service';
-import {User} from './todo';
+import {Todo} from './todo';
 
 @Component({
   selector: 'app-todo-component',
   styleUrls: ['./todo.component.css'],
   templateUrl: 'todo.component.html'
 })
-export class todoComponent implements OnInit {
-  public user: User = null;
+export class TodoComponent implements OnInit {
+  public todo: Todo = null;
   private id: string;
 
   constructor(private todoListService: TodoListService) {
@@ -18,7 +18,7 @@ export class todoComponent implements OnInit {
   private subscribeToServiceForId() {
     if (this.id) {
       this.todoListService.getUserById(this.id).subscribe(
-        user => this.user = user,
+        todo => this.todo = todo,
         err => {
           console.log(err);
         }
@@ -35,3 +35,5 @@ export class todoComponent implements OnInit {
     this.subscribeToServiceForId();
   }
 }
+
+

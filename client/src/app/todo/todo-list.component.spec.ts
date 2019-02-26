@@ -8,53 +8,53 @@ import 'rxjs/add/operator/do';
 
 import {CustomModule} from '../custom.module';
 
-import {User} from './todo';
-import {todoListComponent} from './todo-list.component';
+import {Todo} from './todo';
+import {TodoListComponent} from './todo-list.component';
 import {TodoListService} from './todo-list.service';
 
-describe('User list', () => {
+describe('Todo list', () => {
 
-  let userList: todoListComponent;
-  let fixture: ComponentFixture<todoListComponent>;
+  let todoList: TodoListComponent;
+  let fixture: ComponentFixture<TodoListComponent>;
 
-  let userListServiceStub: {
-    getUsers: () => Observable<User[]>
+  let todoListServiceStub: {
+    getUsers: () => Observable<Todo[]>
   };
 
   beforeEach(() => {
     // stub UserService for test purposes
-    userListServiceStub = {
+    todoListServiceStub = {
       getUsers: () => Observable.of([
         {
           id: 'chris_id',
-          name: 'Chris',
-          age: 25,
-          company: 'UMM',
-          email: 'chris@this.that'
+          owner: 'Chris',
+          status: true,
+          body: 'UMM',
+          category: 'chris@this.that'
         },
         {
           id: 'pat_id',
-          name: 'Pat',
-          age: 37,
-          company: 'IBM',
-          email: 'pat@something.com'
+          owner: 'Jamie',
+          status: true,
+          body: 'IBM',
+          category: 'pat@something.com'
         },
         {
           id: 'jamie_id',
-          name: 'Jamie',
-          age: 37,
-          company: 'Frogs, Inc.',
-          email: 'jamie@frogs.com'
+          owner: 'Jamie',
+          status: false,
+          body: 'Frogs, Inc.',
+          category: 'jamie@frogs.com'
         }
       ])
     };
 
     TestBed.configureTestingModule({
       imports: [CustomModule],
-      declarations: [TodoListService],
+      declarations: [TodoListComponent],
       // providers:    [ UserListService ]  // NO! Don't provide the real service!
       // Provide a test-double instead
-      providers: [{provide: TodoListService, useValue: userListServiceStub},
+      providers: [{provide: TodoListService, useValue: todoListServiceStub},
         {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true}]
 
     });
@@ -62,69 +62,99 @@ describe('User list', () => {
 
   beforeEach(async(() => {
     TestBed.compileComponents().then(() => {
-      fixture = TestBed.createComponent(todoListComponent);
-      userList = fixture.componentInstance;
+      fixture = TestBed.createComponent(TodoListComponent);
+      todoList = fixture.componentInstance;
       fixture.detectChanges();
     });
   }));
 
   it('contains all the users', () => {
-    expect(userList.users.length).toBe(3);
+    expect(todoList.todos.length).toBe(3);
   });
 
-  it('contains a user named \'Chris\'', () => {
-    expect(userList.users.some((user: User) => user.name === 'Chris')).toBe(true);
+  it('contains a todo with an owner named \'Chris\'', () => {
+    expect(todoList.todos.some((todo: Todo) => todo.owner === 'Chris')).toBe(true);
   });
 
-  it('contain a user named \'Jamie\'', () => {
-    expect(userList.users.some((user: User) => user.name === 'Jamie')).toBe(true);
+  it('contain a todo with an owner named \'Jamie\'', () => {
+    expect(todoList.todos.some((todo: Todo) => todo.owner === 'Jamie')).toBe(true);
   });
 
-  it('doesn\'t contain a user named \'Santa\'', () => {
-    expect(userList.users.some((user: User) => user.name === 'Santa')).toBe(false);
+  it('doesn\'t contain a todo with an owner named \'Santa\'', () => {
+    expect(todoList.todos.some((todo: Todo) => todo.owner === 'Santa')).toBe(false);
   });
 
-  it('has two users that are 37 years old', () => {
-    expect(userList.users.filter((user: User) => user.age === 37).length).toBe(2);
-  });
-  it('user list filters by name', () => {
-    expect(userList.filteredUsers.length).toBe(3);
-    userList.userName = 'a';
-    const a: Observable<User[]> = userList.refreshUsers();
+  it('user list filters by owner', () => {
+    expect(todoList.filteredUsers.length).toBe(3);
+    todoList.todoOwner = 'Chris';
+    const a: Observable<Todo[]> = todoList.refreshUsers();
     a.do(x => Observable.of(x))
-      .subscribe(x => expect(userList.filteredUsers.length).toBe(2));
+      .subscribe(x => expect(todoList.filteredUsers.length).toBe(1));
   });
 
-  it('user list filters by age', () => {
-    expect(userList.filteredUsers.length).toBe(3);
-    userList.userAge = 37;
-    const a: Observable<User[]> = userList.refreshUsers();
+  it('todo list filters by status', () => {
+    expect(todoList.filteredUsers.length).toBe(3);
+    todoList.todoStatus = "false";
+    const a: Observable<Todo[]> = todoList.refreshUsers();
     a.do(x => Observable.of(x))
-      .subscribe(x => expect(userList.filteredUsers.length).toBe(2));
+      .subscribe(x => expect(todoList.filteredUsers.length).toBe(1));
   });
 
-  it('user list filters by name and age', () => {
-    expect(userList.filteredUsers.length).toBe(3);
-    userList.userAge = 37;
-    userList.userName = 'i';
-    const a: Observable<User[]> = userList.refreshUsers();
+  it('todo list filters by owner and id', () => {
+    expect(todoList.filteredUsers.length).toBe(3);
+   // todoList.todoBody  = 'Frogs, Inc.';
+    todoList.todoOwner = 'Jamie';
+    todoList.todoID = 'jamie_id';
+
+    const a: Observable<Todo[]> = todoList.refreshUsers();
     a.do(x => Observable.of(x))
-      .subscribe(x => expect(userList.filteredUsers.length).toBe(1));
+      .subscribe(x => expect(todoList.filteredUsers.length).toBe(1));
+  });
+
+  it('todo list filters by name and id and status', () => {
+    expect(todoList.filteredUsers.length).toBe(3);
+    todoList.todoOwner = 'Jamie';
+    todoList.todoID = 'jamie_id';
+    todoList.todoStatus = 'false';
+
+    const a: Observable<Todo[]> = todoList.refreshUsers();
+    a.do(x => Observable.of(x))
+      .subscribe(x => expect(todoList.filteredUsers.length).toBe(1));
+  });
+
+  it('todo list filters by name and id and status', () => {
+    expect(todoList.filteredUsers.length).toBe(3);
+    todoList.todoOwner = 'Jamie';
+    todoList.todoBody = 'IBM';
+
+    const a: Observable<Todo[]> = todoList.refreshUsers();
+    a.do(x => Observable.of(x))
+      .subscribe(x => expect(todoList.filteredUsers.length).toBe(1));
+  });
+
+  it('todo list filters by name and category', () => {
+    expect(todoList.filteredUsers.length).toBe(3);
+    todoList.todoOwner = 'Jamie';
+    todoList.todoCategory = 'jamie@frogs.com';
+
+    const a: Observable<Todo[]> = todoList.refreshUsers();
+    a.do(x => Observable.of(x))
+      .subscribe(x => expect(todoList.filteredUsers.length).toBe(1));
   });
 
 });
 
-describe('Misbehaving User List', () => {
-  let userList: todoListComponent;
-  let fixture: ComponentFixture<todoListComponent>;
+describe('Misbehaving Todo List', () => {
+  let todoList: TodoListComponent;
+  let fixture: ComponentFixture<TodoListComponent>;
 
-  let userListServiceStub: {
-    getUsers: () => Observable<User[]>
+  let todoListServiceStub: {
+    getUsers: () => Observable<Todo[]>
   };
 
   beforeEach(() => {
     // stub UserService for test purposes
-    userListServiceStub = {
+    todoListServiceStub = {
       getUsers: () => Observable.create(observer => {
         observer.error('Error-prone observable');
       })
@@ -132,22 +162,171 @@ describe('Misbehaving User List', () => {
 
     TestBed.configureTestingModule({
       imports: [FormsModule, CustomModule],
-      declarations: [todoListComponent],
-      providers: [{provide: TodoListService, useValue: userListServiceStub},
+      declarations: [TodoListComponent],
+      providers: [{provide: TodoListService, useValue: todoListServiceStub},
         {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true}]
     });
   });
 
   beforeEach(async(() => {
     TestBed.compileComponents().then(() => {
-      fixture = TestBed.createComponent(todoListComponent);
-      userList = fixture.componentInstance;
+      fixture = TestBed.createComponent(TodoListComponent);
+      todoList = fixture.componentInstance;
       fixture.detectChanges();
     });
   }));
 
-  it('generates an error if we don\'t set up a UserListService', () => {
+  it('generates an error if we don\'t set up a TodoListService', () => {
     // Since the observer throws an error, we don't expect users to be defined.
-    expect(userList.users).toBeUndefined();
+    expect(todoList.todos).toBeUndefined();
   });
 });
+
+/*
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {Observable} from 'rxjs/Observable';
+import {FormsModule} from '@angular/forms';
+import {MATERIAL_COMPATIBILITY_MODE} from '@angular/material';
+
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/do';
+
+import {CustomModule} from '../custom.module';
+
+import {Todo} from './todo';
+import {TodoListComponent} from './todo-list.component';
+import {TodoListService} from './todo-list.service';
+
+describe('Todo list', () => {
+
+  let todoList: TodoListComponent;
+  let fixture: ComponentFixture<TodoListComponent>;
+
+  let todoListServiceStub: {
+    getTodos: () => Observable<Todo[]>
+  };
+
+  beforeEach(() => {
+    // stub UserService for test purposes
+    todoListServiceStub = {
+      getTodos: () => Observable.of([
+        {
+          id: 'chris_id',
+          owner: 'Chris',
+          status: true,
+          body: 'UMM',
+          category: 'software design'
+        },
+        {
+          id: 'pat_id',
+          owner: 'Pat',
+          status: true,
+          body: 'IBM',
+          category: 'pat@something.com'
+        },
+        {
+          id: 'jamie_id',
+          owner: 'Jamie',
+          status: false,
+          body: 'Frogs, Inc.',
+          category: 'jamie@frogs.com'
+        }
+      ])
+    };
+
+    TestBed.configureTestingModule({
+      imports: [CustomModule],
+      declarations: [TodoListComponent],
+      // providers:    [ UserListService ]  // NO! Don't provide the real service!
+      // Provide a test-double instead
+      providers: [{provide: TodoListService, useValue: todoListServiceStub},
+        {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true}]
+
+    });
+  });
+
+  beforeEach(async(() => {
+    TestBed.compileComponents().then(() => {
+      fixture = TestBed.createComponent(TodoListComponent);
+      todoList = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+  }));
+
+  it('contains all the users', () => {
+    expect(todoList.todos.length).toBe(3);
+  });
+
+    it('contains a user named \'Chris\'', () => {
+      expect(todoList.todos.some((todo: Todo) => todo.owner === 'Chris')).toBe(true);
+    });
+
+    it('user list filters by name', () => {
+      expect(todoList.filteredUsers.length).toBe(3);
+      todoList.todoOwner = 'a';
+      const a: Observable<Todo[]> = todoList.refreshUsers();
+      a.do(x => Observable.of(x))
+        .subscribe(x => expect(todoList.filteredUsers.length).toBe(2));
+    });
+/*
+    it('user list filters by age', () => {
+      expect(todoList.filteredUsers.length).toBe(3);
+      todoList.userAge = 37;
+      const a: Observable<Todo[]> = todoList.refreshUsers();
+      a.do(x => Observable.of(x))
+        .subscribe(x => expect(todoList.filteredUsers.length).toBe(2));
+    });
+
+    it('user list filters by name and age', () => {
+      expect(todoList.filteredUsers.length).toBe(3);
+      todoList.todoStatus = ;
+      todoList.userName = 'i';
+      const a: Observable<Todo[]> = todoList.refreshUsers();
+      a.do(x => Observable.of(x))
+        .subscribe(x => expect(todoList.filteredUsers.length).toBe(1));
+    });
+*/
+
+/*
+  });
+
+  describe('Misbehaving User List', () => {
+    let todoList: TodoListComponent;
+    let fixture: ComponentFixture<TodoListComponent>;
+
+    let todoListServiceStub: {
+      getUsers: () => Observable<Todo[]>
+    };
+
+    beforeEach(() => {
+      // stub UserService for test purposes
+      todoListServiceStub = {
+        getUsers: () => Observable.create(observer => {
+          observer.error('Error-prone observable');
+        })
+      };
+
+      TestBed.configureTestingModule({
+        imports: [FormsModule, CustomModule],
+        declarations: [TodoListComponent],
+        providers: [{provide: TodoListService, useValue: todoListServiceStub},
+          {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true}]
+      });
+    });
+
+    beforeEach(async(() => {
+      TestBed.compileComponents().then(() => {
+        fixture = TestBed.createComponent(TodoListComponent);
+        todoList = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+    }));
+
+    it('generates an error if we don\'t set up a UserListService', () => {
+      // Since the observer throws an error, we don't expect users to be defined.
+      expect(todoList.todos).toBeUndefined();
+    });
+  });
+*/
+
+

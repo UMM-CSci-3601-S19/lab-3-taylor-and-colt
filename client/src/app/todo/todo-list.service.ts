@@ -3,21 +3,21 @@ import {HttpClient} from '@angular/common/http';
 
 import {Observable} from 'rxjs/Observable';
 
-import {User} from './todo';
+import {Todo} from './todo';
 import {environment} from '../../environments/environment';
 
 @Injectable()
 export class TodoListService {
-  readonly userUrl: string = environment.API_URL + 'users';
+  readonly todoUrl: string = environment.API_URL + 'todos';
 
   constructor(private httpClient: HttpClient) {
   }
 
-  getUsers(): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.userUrl);
+  getUsers(): Observable<Todo[]> {
+    return this.httpClient.get<Todo[]>(this.todoUrl);
   }
 
-  getUserById(id: string): Observable<User> {
-    return this.httpClient.get<User>(this.userUrl + '/' + id);
+  getUserById(id: string): Observable<Todo> {
+    return this.httpClient.get<Todo>(this.todoUrl + '/' + id);
   }
 }
