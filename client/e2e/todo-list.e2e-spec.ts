@@ -1,4 +1,4 @@
-import {TodoPage} from './user-list.po';
+import {TodoPage} from './todo-list.po';
 import {browser, protractor} from 'protractor';
 
 let origFn = browser.driver.controlFlow().execute;
@@ -17,37 +17,44 @@ browser.driver.controlFlow().execute = function () {
     return origFn.apply(browser.driver.controlFlow(), args);
 };
 
-describe('User list', () => {
+describe('Todo list', () => {
+
     let page: TodoPage;
 
     beforeEach(() => {
         page = new TodoPage();
     });
 
-    it('should get and highlight User Name attribute ', () => {
+    it('should get and highlight Todo Name attribute ', () => {
         page.navigateTo();
         expect(page.getTodoTitle()).toEqual('Todos');
     });
 
-    it('should type something in filter name box and check that it returned correct element', () => {
+    it('Tests owner filter', () => {
         page.navigateTo();
         page.typeAName("t");
-        expect(page.getUniqueUser("kittypage@surelogic.com")).toEqual("Kitty Page");
+        expect(page.getUniqueTodo("todoMatBody")).toEqual("Pariatur ea et incididunt tempor eu voluptate laborum irure cupidatat adipisicing. Consequat occaecat consectetur qui culpa dolor.");
         page.backspace();
-        page.typeAName("lynn")
-        expect(page.getUniqueUser("lynnferguson@niquent.com")).toEqual("Lynn Ferguson");
+        page.typeAName("Blanche")
+        expect(page.getUniqueTodo("todoMatBody")).toEqual("In sunt ex non tempor cillum commodo amet incididunt anim qui commodo quis. Cillum non labore ex sint esse.");
     });
 
-    it('should click on the age 27 times and return 3 elements', () => {
-        page.navigateTo();
-        page.getUserByAge();
-        for (let i = 0; i < 27; i++) {
-            page.selectUpKey();
-        }
+    it('Tests multiple element filter, first with 1 element, then 2, then 3', () => {
+      page.navigateTo();
+      page.typeABody("Ullamco");
+      expect(page.getUniqueTodo("todoMatBody")).toEqual("Ipsum esse est ullamco magna tempor anim laborum non officia deserunt veniam commodo. Aute minim incididunt ex commodo.");
+      page.typeAName("Blanche")
+      expect(page.getUniqueTodo("todoMatBody")).toEqual("Aliqua esse aliqua veniam id nisi ea. Ullamco Lorem ex aliqua aliquip cupidatat incididunt reprehenderit voluptate ad nisi elit dolore laboris.");
+      page.typeAStatus("true")
+      expect(page.getUniqueTodo("todoMatBody")).toEqual("Aliqua ut proident sunt minim. Sunt cupidatat ullamco reprehenderit sit Lorem.");
+      page.typeACategory("groceries")
+      expect(page.getUniqueTodo("todoMatBody")).toEqual("Aliqua esse aliqua veniam id nisi ea. Ullamco Lorem ex aliqua aliquip cupidatat incididunt reprehenderit voluptate ad nisi elit dolore laboris.");
 
-        expect(page.getUniqueUser("stokesclayton@momentia.com")).toEqual("Stokes Clayton");
-
-        expect(page.getUniqueUser("merrillparker@escenta.com")).toEqual("Merrill Parker");
 
     });
-});
+})
+
+      //  expect(page.getUniqueTodo("stokesclayton@momentia.com")).toEqual("Stokes Clayton");
+
+       // expect(page.getUniqueTodo("merrillparker@escenta.com")).toEqual("Merrill Parker");
+

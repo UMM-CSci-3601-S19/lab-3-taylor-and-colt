@@ -1,7 +1,7 @@
 <div layout-gt-sm="row">
   <div flex-gt-sm="80" flex-offset-gt-sm="10">
     <mat-card>
-      <mat-card-title id="user-list-title">Todos</mat-card-title>
+      <mat-card-title id="todo-list-title">Todos</mat-card-title>
       <mat-divider></mat-divider>
       <mat-card-content>
         <mat-form-field>
@@ -32,10 +32,10 @@
           <mat-expansion-panel #elem [id]="todo.id" *ngFor="let todo of this.filterUsers(todoOwner, todoBody, todoStatus, null, todoCategory)">
             <mat-expansion-panel-header>
 
-              <mat-panel-title matTooltip="category: {{todo.category}}">{{todo.body}}</mat-panel-title>
+              <mat-panel-title matTooltip="category: {{todo.category}}" id="todoMatBody">{{todo.body}}</mat-panel-title>
 
             </mat-expansion-panel-header>
-            <mat-panel-description>Works for {{todo.owner}}</mat-panel-description>
+            <mat-panel-description id="todoMatOwner">Works for {{todo.owner}}</mat-panel-description>
             <mat-panel-description>Category: {{todo.category}}</mat-panel-description>
             <mat-panel-description>Status: {{todo.status}}</mat-panel-description>
 

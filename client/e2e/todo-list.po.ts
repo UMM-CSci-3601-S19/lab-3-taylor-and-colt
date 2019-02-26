@@ -2,7 +2,7 @@ import {browser, by, element, Key} from 'protractor';
 
 export class TodoPage {
     navigateTo() {
-        return browser.get('/todo');
+        return browser.get('/todos');
     }
 
     //http://www.assertselenium.com/protractor/highlight-elements-during-your-protractor-test-run/
@@ -19,27 +19,45 @@ export class TodoPage {
         return browser.executeScript(setStyle, element(byObject).getWebElement(), 'color: red; background-color: yellow;');
     }
 
-    getUserTitle() {
-        let title = element(by.id('user-list-title')).getText();
-        this.highlightElement(by.id('user-list-title'));
+    getTodoTitle() {
+        let title = element(by.id('todo-list-title')).getText();
+        this.highlightElement(by.id('todo-list-title'));
 
         return title;
     }
 
     typeAName(name: string) {
-        let input = element(by.id('userName'));
+        let input = element(by.id('todoOwner'));
         input.click();
         input.sendKeys(name);
     }
+
+  typeABody(name: string) {
+    let input = element(by.id('todoBody'));
+    input.click();
+    input.sendKeys(name);
+  }
+
+  typeAStatus(name: string) {
+    let input = element(by.id('todoStatus'));
+    input.click();
+    input.sendKeys(name);
+  }
+
+  typeACategory(name: string) {
+    let input = element(by.id('todoCategory'));
+    input.click();
+    input.sendKeys(name);
+  }
 
     selectUpKey() {
         browser.actions().sendKeys(Key.ARROW_UP).perform();
     }
 
-    getUserByAge() {
-        let input = element(by.id('userName'));
+    getUserByStatus(status: string) {
+        let input = element(by.id('todoStatus'));
         input.click();
-        input.sendKeys(Key.TAB);
+        input.sendKeys(status);
     }
 
     backspace(){
@@ -47,10 +65,10 @@ export class TodoPage {
     }
 
 
-    getUniqueUser(email:string) {
-        let user = element(by.id(email)).getText();
-        this.highlightElement(by.id(email));
+    getUniqueTodo(category:string) {
+        let todo = element(by.id(category)).getText();
+        this.highlightElement(by.id(category));
 
-        return user;
+        return todo;
     }
 }
