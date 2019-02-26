@@ -10,13 +10,13 @@ describe('User component', () => {
   let TodoComponent: todoComponent;
   let fixture: ComponentFixture<todoComponent>;
 
-  let userListServiceStub: {
+  let todoListServiceStub: {
     getUserById: (userId: string) => Observable<User>
   };
 
   beforeEach(() => {
     // stub UserService for test purposes
-    userListServiceStub = {
+    todoListServiceStub = {
       getUserById: (userId: string) => Observable.of([
         {
           id: 'chris_id',
@@ -44,7 +44,7 @@ describe('User component', () => {
 
     TestBed.configureTestingModule({
       declarations: [TodoComponent],
-      providers: [{provide: TodoListService, useValue: userListServiceStub}]
+      providers: [{provide: TodoListService, useValue: todoListServiceStub}]
     });
   });
 

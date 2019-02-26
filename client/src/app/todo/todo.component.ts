@@ -3,7 +3,7 @@ import {TodoListService} from './todo-list.service';
 import {User} from './todo';
 
 @Component({
-  selector: 'app-user-component',
+  selector: 'app-todo-component',
   styleUrls: ['./todo.component.css'],
   templateUrl: 'todo.component.html'
 })
